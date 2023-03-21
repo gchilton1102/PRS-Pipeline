@@ -3,12 +3,32 @@
 Getting Started
 
 - Clone repository
-  `git clone https://github.com/getian107/PRScsx.git`
+  git clone https://github.com/getian107/PRScsx.git
 - Download LD Reference panels and extract files
   - Can be found on getian107/PRScsx
   - Downloaded UK Biobank data
+  - tar -zxvf ldblk_ukbb_afr.tar.gz
+  - tar -zxvf ldblk_ukbb_amr.tar.gz
+  - tar -zxvf ldblk_ukbb_eas.tar.gz
+  - tar -zxvf ldblk_ukbb_eur.tar.gz
+  - tar -zxvf ldblk_ukbb_sas.tar.gz
 - Download the SNP information and put it in the same folder containing the reference panels
   - Downloaded the UK Biobanks SNP information
 - Install scipy and h5py python packages
-  - `install.packages(scipy)`
-  - `$ pip install h5py`
+  - install.packages(scipy)
+  - $ pip install h5py
+  
+Using PRS-CSx on the Test Data
+python ~/PRScsx/PRScsx.py 
+--ref_dir=/home/grace/PRScsx/LD_panels 
+--bim_prefix=/home/grace/PRScsx/test_data/test 
+--sst_file=/home/grace/PRScsx/test_data/EUR_sumstats.txt,/home/grace/PRScsx/test_data/EAS_sumstats.txt 
+--n_gwas=200000,100000 
+--pop=EUR,EAS 
+--chrom=22 
+--phi=1e-2 
+--out_dir=/home/grace/PRScsx/output 
+--out_name=test
+
+Using PRS-CSx on Sleep Duration Data
+python ~/PRScsx/PRScsx.py \--ref_dir=/home/grace/PRScsx/LD_panels \--bim_prefix=/home/grace/PRScsx/1kg_hm3_QCed_noM \--sst_file=/home/grace/PUMAS/output/META_dur_gwas.gwas.omnibus.ite1.txt \--n_gwas=2639 \--pop=EUR \--phi=1e-2 \--out_dir=/home/grace/PRScsx/output \--out_name=META_dur
