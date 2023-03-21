@@ -1,0 +1,14 @@
+*Following steps from getian107/PRScsx*
+
+Getting Started
+
+- Clone repository
+  `git clone https://github.com/getian107/PRScsx.git`
+- Download LD Reference panels and extract files
+  - Can be found on getian107/PRScsx
+  - Downloaded UK Biobank data
+- Download the SNP information and put it in the same folder containing the reference panels
+  - Downloaded the UK Biobanks SNP information
+- Install scipy and h5py python packages
+  - `install.packages(scipy)`
+  - `$ pip install h5py`
