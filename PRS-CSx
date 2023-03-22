@@ -32,3 +32,4 @@ python ~/PRScsx/PRScsx.py
 
 Using PRS-CSx on Sleep Duration Data
 python ~/PRScsx/PRScsx.py \--ref_dir=/home/grace/PRScsx/LD_panels \--bim_prefix=/home/grace/PRScsx/1kg_hm3_QCed_noM \--sst_file=/home/grace/PUMAS/output/META_dur_gwas.gwas.omnibus.ite1.txt \--n_gwas=2639 \--pop=EUR \--phi=1e-2 \--out_dir=/home/grace/PRScsx/output \--out_name=META_dur
+* I think there's an error with the format of the gwas file *
