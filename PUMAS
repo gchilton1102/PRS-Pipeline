@@ -53,4 +53,4 @@ data <- fread("/home/grace/PUMAS/META_dur_gwas")
 Rscript ./code/PUMAS_subsampling.R \--k 4 \--partitions 0.75,0.25 \--trait_name META_dur_gwas \--gwas_path ./gwas/ \--ld_path ./LD \--output_path ./output/
 
 #Run subsample script for PUMAS-CUBS
-Rscript /home/grace/PUMAS/code/PUMAS_subsampling.R \--k 4 \--partitions 0.75,0.25 \--trait_name META_dur_gwas \--gwas_path /home/grace/PUMAS/gwas/ \--ld_path /home/grace/PUMAS/LD/ \--output_path /home/grace/PUMAS/output/
+Rscript ./code/PUMA-CUBS.subsampling.R \--k 4 \--partitions 0.6,0.2,0.1,0.1 \--trait_name META_chron_gwas \--gwas_path ./gwas/ \--ld_path ./LD/ \--output_path ./output/
