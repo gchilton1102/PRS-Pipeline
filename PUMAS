@@ -17,7 +17,7 @@ library(BEDMatrix)
 library(parallel)
 
 #Subsample creation
-#First, need to reformat the GWAS files to only include the following columns:
+#First, need to make sure the GWAS file has at least following columns:
 SNP: SNP identifier (rsID)
 A1: effective allele
 A2: other allele
