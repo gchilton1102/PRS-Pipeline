@@ -34,10 +34,10 @@ Reformatting the GWAS file - Has to be a tab-separated file with specific column
 SNP, A1, A2, BETA, P
 library(data.table)
 library(dplyr)
-data <- fread("/home/grace/PUMAS/output/META_dur_gwas.gwas.omnibus.ite1.txt") #PUMAS data
+data <- fread("/home/grace/PUMAS/output/META_chron_gwas.gwas.omnibus.ite1.txt") #PUMAS data
 newData <- select(data, SNP, A1, A2, BETA, P) #selecting columns that PRS-CSx needs
 newData <- relocate(newData, SNP, A1, A2, BETA, P) #putting columns in the order that PRS-CSx requires
-fwrite(newData, "/home/grace/PRScsx/META_dur_gwas.txt", sep = "\t")
+fwrite(newData, "/home/grace/PRScsx/META_chron_gwas.txt", sep = "\t")
 
 Using PRS-CSx on Sleep Duration Data
-python ~/PRScsx/PRScsx.py \--ref_dir=/home/grace/PRScsx/LD_panels \--bim_prefix=/home/grace/PRScsx/1kg_hm3_QCed_noM \--sst_file=/home/grace/PRScsx/META_dur_gwas.txt \--n_gwas=2639 \--pop=EUR \--phi=1e-2 \--out_dir=/home/grace/PRScsx/output \--out_name=META_dur
+python ~/PRScsx/PRScsx.py \--ref_dir=/home/grace/PRScsx/LD_panels \--bim_prefix=/home/grace/PUMAS/1kg_hm3_QCed_noM \--sst_file=/home/grace/PRScsx/META_chron_gwas.txt \--n_gwas=2639 \--pop=EUR \--phi=1e-2 \--out_dir=/home/grace/PRScsx/output \--out_name=META_chron        
