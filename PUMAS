@@ -27,8 +27,12 @@ SE: standard error for BETA
 P: P-value
 N: sample size
 
+#Unzip gwas file if needed
+zcat ./gwas/hg38_PUKBB_AFR_chronotype.tsv.gz |awk '{print "chr" $1 "_" $2 "_" $3 "_" $4 "_b38\t" $0}' > ./gwas/hg38_PUKBB_AFR_chronotype.tsv 
+#gzip ./gwas/hg38_PUKBB_AFR_chronotype.tsv
+
 # Running QC on GWAS data with PUMAS code
-Rscript ./code/gwas_qc.R \--file_path ./META_dur_gwas \--frq_path ./1kg_hm3_QCed_noM_freq.frq \--output_path ./ \--snp V2 \--a1 ref \--a2 alt \--stat beta_meta \--p pval_meta \--n.total 501520 \--chr chr \--bp pos \--se se_meta \--maf af_meta    
+Rscript ./code/gwas_qc.R \--file_path ./gwas/hg38_PUKBB_AFR_chronotype.tsv \--frq_path ./1kg_hm3_QCed_noM_freq.frq \--output_path ./ \--snp panel_variant_id \--a1 effect_allele \--a2 non_effect_allele \--stat effect_size \--p pvalue \--n.total 1180 \--chr chromosome \--bp position \--se standard_error \--maf frequency    
 
 #join bim and gwas files
 library(data.table)
@@ -38,19 +42,19 @@ library(dplyr)
 bim <- fread("/home/grace/PUMAS/1kg_hm3_QCed_noM.bim") 
 bim <- mutate(bim, ID = (V1 %&% "_" %&% V4))
 
-gwas <- fread("/home/grace/PUMAS/gwasMETA_dur")
+gwas <- fread("./gwas/hg38_PUKBB_AFR_chronotype.tsv")
 gwas <- mutate(gwas, ID = (chr %&% "_" %&% pos))
 
 #joining the files
 joined <- inner_join(gwas,bim, by = c("ID"="ID"))
-joined <- select(joined, c("pos", "ref", "alt", "beta_meta", "se_meta", "pval_meta", "chr", "af_meta", "V2"))
+joined <- select(joined, c("pos", "ref", "alt", "beta_afr", "se_meta", "pval_afr", "chr", "af_afr", "V2"))
 
 #writing new gwas file
-fwrite(joined, "/home/grace/PUMAS/META_dur_gwas")
-data <- fread("/home/grace/PUMAS/META_dur_gwas")
+fwrite(joined, "/home/grace/PUMAS/AFR_chron_gwas")
+data <- fread("/home/grace/PUMAS/AFR_chron_gwas")
 
 #Next run subsample script for PUMAS
-Rscript ./code/PUMAS_subsampling.R \--k 4 \--partitions 0.75,0.25 \--trait_name META_dur_gwas \--gwas_path ./gwas/ \--ld_path ./LD \--output_path ./output/
+Rscript ./code/PUMAS_subsampling.R \--k 4 \--partitions 0.75,0.25 \--trait_name AFR_chron_gwas \--gwas_path ./gwas/ \--ld_path ./LD \--output_path ./output/
 
 #Run subsample script for PUMAS-CUBS
-Rscript ./code/PUMA-CUBS.subsampling.R \--k 4 \--partitions 0.6,0.2,0.1,0.1 \--trait_name META_dur_gwas \--gwas_path ./gwas/ \--ld_path ./LD/ \--output_path ./output/
+Rscript ./code/PUMA-CUBS.subsampling.R \--k 4 \--partitions 0.6,0.2,0.1,0.1 \--trait_name AFR_chron_gwas \--gwas_path ./gwas/ \--ld_path ./LD/ \--output_path ./output/
