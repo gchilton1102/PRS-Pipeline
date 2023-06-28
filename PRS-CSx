@@ -31,13 +31,22 @@ python ~/PRScsx/PRScsx.py
 --out_name=test
 
 Reformatting the GWAS file - Has to be a tab-separated file with specific columns in a specific order
-SNP, A1, A2, BETA, P
-library(data.table)
-library(dplyr)
-data <- fread("/home/grace/PUMAS/output/META_chron_gwas.gwas.omnibus.ite1.txt") #PUMAS data
-newData <- select(data, SNP, A1, A2, BETA, P) #selecting columns that PRS-CSx needs
-newData <- relocate(newData, SNP, A1, A2, BETA, P) #putting columns in the order that PRS-CSx requires
-fwrite(newData, "/home/grace/PRScsx/META_chron_gwas.txt", sep = "\t")
+#SNP, A1, A2, BETA, P
 
-Using PRS-CSx on Sleep Duration Data
-python ~/PRScsx/PRScsx.py \--ref_dir=/home/grace/PRScsx/LD_panels \--bim_prefix=/home/grace/PUMAS/1kg_hm3_QCed_noM \--sst_file=/home/grace/PRScsx/META_chron_gwas.txt \--n_gwas=2639 \--pop=EUR \--phi=1e-2 \--out_dir=/home/grace/PRScsx/output \--out_name=META_chron        
+for FILE in *
+do
+cut -f 3-5,7,9 $FILE > /home/grace/PRScsx/PUMAS/prscsx_$FILE
+done
+
+Using PRS-CSx on Sleep Chronotype Data for the first iteration with phi=1e-02
+
+python /home/grace/PRScsx/PRScsx.py \
+--ref_dir=/home/grace/PRScsx/LD_panels \
+--bim_prefix=/home/wheelerlab3/Data/PRS_LD_refs/ldsnps_1kg_ALL.chr1-22.phase3 \
+--sst_file=/home/grace/PRScsx/PUMAS/prscsx_eur_rsids_chronotype_gwas.gwas.ite1.txt,/home/grace/PRScsx/PUMAS/prscsx_eas_rsids_chronotype_gwas.gwas.ite1.txt,/home/grace/PRScsx/PUMAS/prscsx_afr_rsids_chrono>
+--n_gwas=375390,2343,5561,884 \
+--pop=EUR,EAS,AFR,AMR \
+--out_dir=/home/grace/PRScsx/output/ite2/phi1e-02 \
+--out_name=chron \
+--phi=1e-02 \
+--seed=60605
