@@ -1,2 +1,2 @@
 # PRS-work
-Collection of work done to build polygenic risk scores for the sleep chronotype and duration phenotypes.
+Collection of work done to build polygenic risk scores for several different phenotypes, including sleep chronotype, duration, and height.
