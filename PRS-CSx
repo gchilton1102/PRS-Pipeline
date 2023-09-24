@@ -30,14 +30,11 @@ python ~/PRScsx/PRScsx.py
 --out_dir=/home/grace/PRScsx/output 
 --out_name=test
 
-Reformatting the GWAS file - Has to be a tab-separated file with specific columns in a specific order
-#SNP, A1, A2, BETA, P
-
-for FILE in *
+Reformat GWAS summary statistics
+for pop in AFR AMR CSA EAS EUR
 do
-cut -f 3-5,7,9 $FILE > /home/grace/PRScsx/PUMAS/prscsx_$FILE
+Rscript 01_reformat_sumstats.R $pop /home/grace/PRScsx/gwas/rsids_height_gwas.txt.gz
 done
-
 Using PRS-CSx on Sleep Chronotype Data for the first iteration with phi=1e-02
 
 python /home/grace/PRScsx/PRScsx.py \
