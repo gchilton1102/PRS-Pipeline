@@ -47,3 +47,5 @@ python /home/grace/PRScsx/PRScsx.py \
 --out_name=chron \
 --phi=1e-02 \
 --seed=60605
+
+# GIT ADDITION #
