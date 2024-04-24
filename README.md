@@ -9,7 +9,9 @@ The phenotype I worked with is Standing Height
 
 ## Getting Started
 
-* First, clone the PRS-CSx GitHub page
+* Download the GWAS summary statistics from the [Pan-UK Biobank Phenotypes page](https://pan.ukbb.broadinstitute.org/phenotypes)
+ 
+* Clone the PRS-CSx GitHub page
 
 `git clone https://github.com/getian107/PRScsx.git`
 
