@@ -13,6 +13,8 @@ The phenotype I worked with is Standing Height
  
 * Run the script to add rsids to the sumstats, `00_add_rsids.sh`
 
+* Run the script to reformat the sumstats, `01_reformat_sumstats.R`
+
 * Clone the PRS-CSx GitHub page
 
 `git clone https://github.com/getian107/PRScsx.git`
