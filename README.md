@@ -36,3 +36,6 @@ The phenotype I worked with is Standing Height
 ## Using PRS-CSx
 
 * Run the script `02_run_prscsx.sh` with the correct population sample sizes and seed
+
+### PRScsx output
+
