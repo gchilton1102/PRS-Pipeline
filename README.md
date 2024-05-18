@@ -11,6 +11,8 @@ The phenotype I worked with is Standing Height
 
 * Download the GWAS summary statistics from the [Pan-UK Biobank Phenotypes page](https://pan.ukbb.broadinstitute.org/phenotypes)
  
+* Run the script to add rsids to the sumstats, `00_add_rsids.sh`
+
 * Clone the PRS-CSx GitHub page
 
 `git clone https://github.com/getian107/PRScsx.git`
