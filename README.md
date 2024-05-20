@@ -39,3 +39,10 @@ The phenotype I worked with is Standing Height
 
 ### PRScsx output
 
+* Files with the following format: `Standing_height_POP_pst_eff_a1_b0.5_phiX_chr#.txt` are generated
+
+** POP is replaced with each population that you ran
+
+** X is replaced with the phi value that you used
+
+** The chromosome numbers correspond to the chromosome each file was generated from
