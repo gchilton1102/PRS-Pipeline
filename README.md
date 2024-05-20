@@ -46,3 +46,5 @@ The phenotype I worked with is Standing Height
 	* X is replaced with the phi value that you used
 
 	* The chromosome numbers correspond to the chromosome each file was generated from
+
+* These files include the following unlabelled columns: rsid, base position, A1, A2, posterior effect size estimate 
