@@ -69,6 +69,8 @@ seed= 60556 # seed value
 
 * The following seeds: 60556, 2001, 4928
 
+* And the following phi values: 1e-02, 1e-04, 1e-06, 1e-08
+
 * I split the runs into separate chromosomes in the following way to be more efficient:
 
 	1, 8, 9, 16, 17
