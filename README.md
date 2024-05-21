@@ -5,6 +5,8 @@ The phenotype I worked with is Standing Height.
 
 ## Dependencies
 
+* R and Python Programming languages
+
 * Python packages scipy and h5py
 
 ## Getting Started
@@ -12,6 +14,13 @@ The phenotype I worked with is Standing Height.
 * Download the GWAS summary statistics from the [Pan-UK Biobank Phenotypes page](https://pan.ukbb.broadinstitute.org/phenotypes)
  
 * Run the script to add rsids to the sumstats, `00_add_rsids.sh`
+
+* The GWAS sumstats must be in the following format to run PRScsx:
+`    SNP          A1   A2   BETA      SE
+    rs4970383    C    A    -0.0064   0.0090
+    rs4475691    C    T    -0.0145   0.0094
+    rs13302982   A    G    -0.0232   0.0199
+    ...`
 
 * Run the script to reformat the sumstats, `01_reformat_sumstats.R`
 
