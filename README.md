@@ -49,6 +49,10 @@ The phenotype I worked with is Standing Height
 
 * These files include the following unlabelled columns: rsid, base position, A1, A2, posterior effect size estimate 
 
+* This data is what is used to generate individual polygenic risk scores
+
+* They will be used as input for the All of Us Validation step
+
 ## All of Us Validation and Testing Steps
 
 * `06_Validation.txt` to output Validation weights
