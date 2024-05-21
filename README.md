@@ -48,6 +48,23 @@ The phenotype I worked with is Standing Height.
 
 * Run the script `02_run_prscsx.sh` with the correct population sample sizes, seed, and chromosome numbers
 
+* You will need to edit the first part of the script that looks like this:
+
+```
+pop1=afr #population
+n1=6556
+pop2=amr
+n2=972
+pop3=sas
+n3=8657
+pop4=eas
+n4=2397
+pop5=eur
+n5=419596
+phi=1e-04
+seed= 60556
+```
+
 * I ran the following populations: AFR, AMR, EAS, EUR, SAS
 
 * The following seeds: 60556, 2001, 4928
