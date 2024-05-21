@@ -48,3 +48,9 @@ The phenotype I worked with is Standing Height
 	* The chromosome numbers correspond to the chromosome each file was generated from
 
 * These files include the following unlabelled columns: rsid, base position, A1, A2, posterior effect size estimate 
+
+## All of Us Validation and Testing Steps
+
+* `06_Validation.txt` to output Validation weights
+
+* `07_Testing.text` to output Testing Adjusted R Squared Values for each pop
