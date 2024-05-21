@@ -52,17 +52,17 @@ The phenotype I worked with is Standing Height.
 
 ```
 pop1=afr
-n1=6556
+n1=6556 # pop1 sample size
 pop2=amr
-n2=972
+n2=972 # pop2 sample size
 pop3=sas
-n3=8657
+n3=8657 # pop3 sample size
 pop4=eas
-n4=2397
+n4=2397 # pop4 sample size
 pop5=eur
-n5=419596
-phi=1e-04
-seed= 60556
+n5=419596 # pop5 sample size
+phi=1e-04 # phi value
+seed= 60556 # seed value
 ```
 
 * I ran the following populations: AFR, AMR, EAS, EUR, SAS
