@@ -1,0 +1,142 @@
+library(tidyverse) # Data wrangling package
+library(data.table)
+
+library("optparse")
+
+option_list = list( # arguments
+    make_option(c("-f","--pheno_file"), type="character", default=NULL,
+               help="Pheno file from Step 4, Part 1", metavar="character"),
+    make_option(c("-v","--val_output"), type="character",default="testing_out.txt",
+               help="Name of validation weights output file [default= %default]",metavar="character"),
+    make_option(c("-p","--populations"),type="list",default=NULL,
+               help="List of populations to be used in the validation and testing steps", metavar="list")
+);
+opt_parser = OptionParser(option_list=option_list);
+opt = parse_args(opt_parser);
+
+if (is.null(opt$pheno_file)){
+  print_help(opt_parser)
+  stop("At least one argument must be supplied (input file).n", call.=FALSE)
+}
+populations <- as.list(unlist(strsplit(opt$populations, split = ","))) # make population arguments into a list
+populations <- unlist(populations)
+
+infile <- opt$pheno_file # Read input phenotype file
+data <- fread(infile)
+
+outfile <- opt$val_output 
+#File created in Part 4, step 1
+#With combined scores and ancestries
+#Get the bucket name
+my_bucket <- Sys.getenv('WORKSPACE_BUCKET')
+
+#Copy the file from current workspace to the bucket
+system(paste0("gsutil cp ", my_bucket, "/data/",infile, " ."), intern=T)
+
+#Remove non-Female or Male sex at birth
+data = filter(data, sex_at_birth=="Male" | sex_at_birth=="Female")
+print(dim(data)) #how many entries left
+#write filtered data for later GWAS (remove PRS's)
+gwaspheno = select(data, -AFR,-AMR,-EAS,-EUR,-SAS)
+fwrite(gwaspheno, "AoU_height_bmi_demog_pca_n234585.txt", quote=F, sep="\t") # Write demographics file
+#copy to bucket
+system("gsutil -m cp AoU_height_bmi_demog_pca_n234585.txt ${WORKSPACE_BUCKET}/data/")
+
+#split the afr, amr, and eur populations in half for hold-out test sets
+#set.seed so it takes the same sample each time--test different seeds in the future to get error
+set.seed(13)
+
+holdout_all <- list() #intializing holdout set
+val_list <- list()
+test_list <- list()
+for (pop in populations) {
+    only_pop = filter(data, ancestry_pred_other==pop) #filtering out other pops
+    num = dim(only_pop)[1] #total pop number
+    half = num / 2 #half pop
+    holdout = sample(only_pop$person_id, half) #sample half
+    file_name = paste0("aou_holdout_",pop,"_id.txt") #create filename
+    fwrite(data.frame(holdout),file_name, sep="\t",col.names=F) #write to file
+    #make validation (not holdout) and test (holdout) sets
+    val = filter(only_pop, !(person_id %in% holdout)) #filter out test entries to make a validation list
+    val_list  <- c(val_list,val) 
+    test = filter(only_pop, person_id %in% holdout) #make test entries list
+    test_list <- c(test_list, test)
+    holdout_all = c(holdout_all,holdout) #concat holdout lists
+    rm(holdout)
+
+}
+
+all_val = filter(data, !(person_id %in% holdout_all))
+all_test = filter(data, person_id %in% holdout_all)
+#combine list for later
+system("cat aou_holdout_* > aou_holdout_all_id.txt")
+
+#copy to bucket
+system("gsutil -m cp aou_holdout_*_id.txt ${WORKSPACE_BUCKET}/data/")
+
+#fit a baseline model, no PRS, just covariates
+prs_pcs = select(all_val,height,sex_at_birth,age_ht,starts_with("V"))
+summary(lm(scale(height)~.,data=prs_pcs))
+
+#fit a linear model, adjusting for genotype PCs and sex at birth and age at height measurement
+populations <- toupper(populations)
+prs_pcs = select(all_val,c(populations,"height","sex_at_birth","age_ht","V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13","V14","V15","V16"))
+summary(lm(scale(height)~.,data=prs_pcs))
+res = summary(lm(scale(height)~.,data=prs_pcs))
+
+
+#matrix to store lm estimates
+
+rows = length(populations)
+columns = length(populations) + 1
+
+print(rows,columns)
+
+PRSweights = matrix(nrow=rows,ncol=columns)
+res$coefficients[,1][2:columns]
+#add estimates to first col of matrix
+PRSweights[,1] = res$coefficients[,1][2:columns]
+
+#do for the rest of AoU pops
+
+for(i in 1:length(populations)){
+    #filter to pop of interest
+    pop = tolower(populations[i])
+    popdata = dplyr::filter(data,ancestry_pred_other==pop) 
+    #remove individuals in test held-out sets
+    popdata = filter(popdata, !(person_id %in% holdout_all))
+    #select variables of interest
+    prs_pcs = select(popdata,c(populations,"height","sex_at_birth","age_ht","V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13","V14","V15","V16"))
+    #fit model
+    res = summary(lm(scale(height)~.,data=prs_pcs))
+    #add estimates to next col (i+1) of matrix
+    PRSweights[,i+1] = res$coefficients[,1][2:columns]
+}
+
+#creating column names
+colnames = c("allAoU")
+for (col in populations){
+    pop_name = tolower(col)
+    col_name = paste0(pop_name, "AoU")
+    colnames = c(colnames, col_name)
+}
+print(colnames)
+colnames(PRSweights) = colnames
+#colnames(PRSweights) = c("allAoU","afrAoU","amrAoU","easAoU","eurAoU","sasAoU")
+rownames(PRSweights) = populations
+print(rownames)
+#rownames(PRSweights) = c("AFR","AMR","EAS","EUR","SAS")
+
+#write to a file
+PRSweights_df = as.data.frame(PRSweights) |> rownames_to_column("UKB_pop")
+fwrite(PRSweights_df,outfile,sep="\t")
+#cp to bucket
+# Get the bucket name
+my_bucket <- Sys.getenv('WORKSPACE_BUCKET')
+# Copy the file from current workspace to the bucket
+system(paste0("gsutil cp ./", outfile, " ", my_bucket, "/data/"), intern=T)
+# Check if file is in the bucket
+system(paste0("gsutil ls ", my_bucket, "/data/*.txt"), intern=T)
+
+system(paste0("gsutil cp ./06_Validation.txt ", my_bucket, "/data/"), intern=T)
+
