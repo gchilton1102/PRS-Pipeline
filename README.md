@@ -71,13 +71,13 @@ seed= 60556 # seed value
 
 * I split the runs into separate chromosomes in the following way to be more efficient:
 
-	1,8,9,16,17
+	1, 8, 9, 16, 17
 
-	2,7,10,15,18
+	2, 7, 10, 15, 18
 
-	3,6,11,14,19,22
+	3, 6, 11, 14, 19, 22
 
-	4,5,12,13,20,21
+	4, 5, 12, 13, 20, 21
 
 ### PRScsx output
 
