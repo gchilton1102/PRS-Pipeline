@@ -51,7 +51,7 @@ The phenotype I worked with is Standing Height.
 * You will need to edit the first part of the script that looks like this:
 
 ```
-pop1=afr #population
+pop1=afr
 n1=6556
 pop2=amr
 n2=972
