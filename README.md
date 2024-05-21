@@ -24,7 +24,7 @@ The phenotype I worked with is Standing Height.
     ...
 ```
 
-* Run the script to reformat the sumstats, `01_reformat_sumstats.R`
+* If not already in the above format, run the script to reformat the PUKBB sumstats, `01_reformat_sumstats.R`
 
 * Clone the PRS-CSx GitHub page
 
@@ -47,6 +47,36 @@ The phenotype I worked with is Standing Height.
 ## Using PRS-CSx
 
 * Run the script `02_run_prscsx.sh` with the correct population sample sizes, seed, and chromosome numbers
+
+* I ran the following populations:
+
+	AFR
+
+	AMR
+
+	EAS
+
+	EUR
+
+	SAS
+
+* The following seeds:
+
+	60556
+
+	2001
+
+	4928
+
+* I split the runs into separate chromosomes in the following way to be more efficient:
+
+	1,8,9,16,17
+
+	2,7,10,15,18
+
+	3,6,11,14,19,22
+
+	4,5,12,13,20,21
 
 ### PRScsx output
 
