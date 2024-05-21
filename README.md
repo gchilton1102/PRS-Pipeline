@@ -99,6 +99,16 @@ seed= 60556 # seed value
 
 ## All of Us Validation and Testing Steps
 
+* Upload the PRScsx output files to your Google bucket
+
+* This section of the pipeline is designed to be run on the All of Us Research Program server
+
+* `03_retrieve_height_weight.html` retrieves the height and weight data for the All of Us research subjects
+
+* `04_calc_PRS_in_AoU.html` calculates polygenic risk scores with the All of Us dataset using the weights generated with PRS-CSx
+
+* `05_part1_compare_PRS_to_observed_join_data.html` retrieves the phenotypes and ancestry PCs of the All of Us dataset and joins this data with the calculated PRS's to create joint phenotype and PRS file: `"Pan-UKB_Standing_height_PRSCSx_phiX_in_AoU_w_pheno.txt` where X is the phi value
+
 * `06_Validation.txt` to output Validation weights
 
 * `07_Testing.text` to output Testing Adjusted R Squared Values for each pop
