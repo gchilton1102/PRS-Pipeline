@@ -1,7 +1,7 @@
 # PRS-work
 
-This pipeline is structured to generate polygenic risk scores with the PRS-CSx tool and test them in the All of Us Research Program dataset.
-The phenotype I worked with is Standing Height
+This pipeline is structured to generate polygenic risk scores with the PRS-CSx tool in the Pan-UK Biobank dataset and validate and test them in the All of Us Research Program dataset.
+The phenotype I worked with is Standing Height.
 
 ## Dependencies
 
