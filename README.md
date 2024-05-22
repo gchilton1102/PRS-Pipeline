@@ -115,6 +115,6 @@ seed= 60556 # seed value
 	```
 	Rscript 06_Validation.txt -f Pan-UKB_Standing_height_PRSCSx_phi1e-02_in_AoU_w_pheno.txt -v Validation_output_weights.txt -p afr,amr,eas,eur
 	```
-	with the pheno file created in the previous step, the name of your desired validation weights file, and the populuations you wish to run the script with
+		with the pheno file created in the previous step, the name of your desired validation weights file, and the populuations you wish to run the script with
 
 * `07_Testing.text` to output Testing Adjusted R Squared Values for each pop
