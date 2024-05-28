@@ -107,7 +107,7 @@ seed= 60556 # seed value
 
 * `04_calc_PRS_in_AoU.html` calculates polygenic risk scores with the All of Us dataset using the weights generated with PRS-CSx
 
-	* Change the populations in the `calc_PRS.sh` script to the populations that you are using in the following line:
+	* Change the populations in the `calc_PRS.sh` script to the populations that you are using in the line 10:
 
 	```
 	for pop in AFR AMR EAS EUR SAS
