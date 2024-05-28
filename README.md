@@ -107,7 +107,11 @@ seed= 60556 # seed value
 
 * `04_calc_PRS_in_AoU.html` calculates polygenic risk scores with the All of Us dataset using the weights generated with PRS-CSx
 
-	* Change the populations in the `calc_PRS.sh` script to the populations that you are using
+	* Change the populations in the `calc_PRS.sh` script to the populations that you are using in the following line:
+
+	```
+	for pop in AFR AMR EAS EUR SAS
+	```
 
 * `05_part1_compare_PRS_to_observed_join_data.html` retrieves the phenotypes and ancestry PCs of the All of Us dataset and joins this data with the calculated PRS's to create joint phenotype and PRS file: `Pan-UKB_Standing_height_PRSCSx_phiX_in_AoU_w_pheno.txt` where X is the phi value
 
