@@ -3,6 +3,21 @@ library(data.table)
 library(tidyverse)  # Data wrangling packages.
 "%&%" = function(a,b) paste(a,b,sep="")
 
+library("optparse")
+
+option_list = list( # arguments
+    make_option(c("-p","--populations"),type="list",default=NULL,
+               help="List of populations to be used in the validation and testing steps", metavar="list"),
+    make_option(c("-i","--phi_value"),type="list",default=NULL,
+               help="Phi value", metavar="list")
+);
+opt_parser = OptionParser(option_list=option_list);
+opt = parse_args(opt_parser);
+
+populations <- as.list(unlist(strsplit(opt$populations, split = ","))) # make population arguments into a list
+populations <- unlist(populations)
+phi = opt$phi_value
+
 #retrieve phenotypes from bucket and read in
 #name_of_file_in_bucket <- 'height_weight_demog_2023-09-27.txt'
 name_of_file_in_bucket <- 'height_weight_demog_2023-12-04.txt'
@@ -45,15 +60,14 @@ scoredir="scores/"
 n=245394 #number of people in .sscore files (from system call above)
 #make matrix to add each pop's PRS to
 all_prs = matrix(nrow=n,ncol=5) #people x #pops
-pops = c("AFR","AMR","EAS","EUR","SAS")
-for(i in 1:length(pops)){
-  pop = pops[i]
+for(i in 1:length(populations)){
+  pop = populations[i]
   #make matrix to add each chr's score to
   prs = matrix(nrow=n,ncol=22) # #people x #chromosomes
   #load matrix
   for(j in 1:22){
     #read in scores calculated in AoU (these were trained in Pan-UKB with SNPs in METS756 .bim file)
-    scores = fread(scoredir %&% "Standing_height_" %&% pop %&% "_pst_eff_a1_b0.5_phi1e-02_chr" %&% j %&% ".sscore")
+    scores = fread(scoredir %&% "Standing_height_" %&% pop %&% "_pst_eff_a1_b0.5_phi" %&% phi %&% "_chr" %&% j %&% ".sscore")
     prs[,j] = scores$SCORE1_AVG
   }
   sum_prs = scale(rowSums(prs)) #take the sum of each row and scale (mean=0,var=1) to generate final PRS
@@ -62,7 +76,7 @@ for(i in 1:length(pops)){
   #add sample IID's as rownames
   rownames(all_prs) = scores$`#IID`
   #add pops as colnames
-  colnames(all_prs) = pops
+  colnames(all_prs) = populations
 }
 
 #join height PRS's with ancestry PCs
@@ -75,7 +89,9 @@ pheno = mutate(pheno,research_id=as.character(person_id))
 all_data = inner_join(prs_pcs,pheno,by='research_id')
 
 #write all_data to text file.
-fwrite(all_data,"Pan-UKB_Standing_height_PRSCSx_phi1e-02_in_AoU_w_pheno.txt",quote=F,row.names=F,sep='\t')
+name = paste0("Pan-UKB_Standing_height_PRSCSx_phi",phi,"_in_AoU_w_pheno.txt")
+
+fwrite(all_data,name,quote=F,row.names=F,sep='\t')
 #cp to bucket
-system("gsutil -m cp Pan-UKB_Standing_height_PRSCSx_phi1e-02_in_AoU_w_pheno.txt ${WORKSPACE_BUCKET}/data/")
+system(paste0("gsutil -m cp Pan-UKB_Standing_height_PRSCSx_phi",phi,"_in_AoU_w_pheno.txt ${WORKSPACE_BUCKET}/data/")
 
