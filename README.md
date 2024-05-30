@@ -128,6 +128,8 @@ seed= 60556 # seed value
 	* Use this command with the validation weights file created int eh previous step and the list of populations that you wish to test in
 
 	```
-	Rscript 07_Testing.txt -v Validation_output_weights.txt -p afr,amr,eas,eur,sas
+	Rscript 07_Testing.txt -v Validation_output_weights.txt -p afr,amr,eas,eur,sas -o Adjusted_R_squared_phiX_SEED.txt
 	```
+
+	* Replace `X` with the correct phi value and `SEED` with the correct seed value
 
