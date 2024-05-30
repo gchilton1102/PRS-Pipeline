@@ -1,0 +1,122 @@
+## TESTING STEP ##
+
+# Set up and read in arguments
+library(tidyverse) # Data wrangling package
+library(data.table)
+
+library("optparse")
+
+option_list = list(
+    make_option(c("-v","--val_output"), type="character",default="testing_out.txt",
+               help="Name of validation weights output file [default= %default]",metavar="character"),
+    make_option(c("-p","--populations"),type="list",default=NULL,
+               help="List of populations to be used in the validation and testing steps", metavar="list"),
+    make_option(c("-o","--outfile"),type="list",default=NULL,
+               help="Name of file to output adjusted R-squared values to", metavar="list")
+);
+opt_parser = OptionParser(option_list=option_list);
+opt = parse_args(opt_parser);
+
+populations1 <- as.list(unlist(strsplit(opt$populations, split = ",")))
+populations <- unlist(populations1)
+
+val_outfile <- opt$val_output
+outfile <- opt$outfile
+
+#read in AoU weights
+aou = fread(val_outfile)
+#calc new score in test (held-out) AoU using UKB-scores multiplied by AoU validation weights
+#one new ensemble score per person per AoU validation pop (all,afr, amr,eas,eur,sas)
+#make matrix of AoU weights
+aou_mat=as.matrix(aou[,-1])
+
+#read in all_test file created from validation step
+all_test <- fread("ALL_TEST")
+colnames(all_test)
+#make matrix for new ensemble scores
+n=dim(all_test)[1] #all_test sample size
+p=length(populations)+1 #six AoU validation pops
+ens_prs = matrix(nrow=n,ncol=p)
+
+populations <- toupper(populations)
+
+for(i in 1:p){
+  #need 1xp matrix of AoU weights
+  aou_weights = t(as.matrix(aou_mat[,i])) 
+  #need px107794 matrix of AoU all_test PRS's for matrix multiplication
+  all_test_scores = t(as.matrix(select(all_test,populations)))
+  #multiply each mets PRS by the AoU weight and take the sum 
+  # %*% does this via matrix multiplication, makes 1x735 matrix
+  new_score = aou_weights %*% all_test_scores 
+  ens_prs[,i] = new_score
+}
+colnames(ens_prs) = colnames(aou_mat) 
+rownames(ens_prs) = all_test$person_id
+#make df to join with mets
+ens_prs_df = as.data.frame(ens_prs) |> rownames_to_column("person_id")
+#make person_id a character in all_test
+all_test = mutate(all_test,person_id=as.character(person_id))
+all_test_aou = left_join(ens_prs_df,all_test,by="person_id")
+
+#test validation weights in the held-out sets
+#make matrix to store adjusted R2
+aou_test_res_mat = matrix(nrow=p,ncol=p+1)
+ancestries = c("all",populations1)
+
+
+for(i in 1:length(ancestries)){
+  anc = ancestries[i]
+  if(i==1){
+    data = all_test_aou
+  }else{
+    data = filter(all_test_aou,ancestry_pred_other==anc)
+  }
+  #baseline model (just covariates)
+  prs_pcs = select(data,height,sex_at_birth,age_ht,starts_with("PC"))
+  res = summary(lm(scale(height)~.,data=prs_pcs))
+  aou_test_res_mat[i,1] = res$adj.r.squared # gets adjusted R squared
+  #making models for each ancestry
+  j = 1
+  for (anc1 in ancestries){
+      j = j + 1
+      anc2 = paste0(anc1,"AoU")
+      prs_pcs= select(data,anc2,height,sex_at_birth,age_ht,starts_with("PC"))
+      res = summary(lm(scale(height)~.,data=prs_pcs))
+      aou_test_res_mat[i,j] = res$adj.r.squared
+  }
+}
+#rownames(aou_test_res_mat) = ancestries
+
+col_names = c("baseline")
+for (name in ancestries){
+    new_name = paste0(name, "AoU")
+    col_names = c(col_names,new_name)
+}   
+colnames(aou_test_res_mat) = col_names
+rownames(aou_test_res_mat) = ancestries
+aou_test_res_mat
+#relative change to baseline
+aou_test_res_mat/aou_test_res_mat[,1]
+
+#focus on largest samples
+aou_test_res_mat_large = cbind(aou_test_res_mat[,1:p],aou_test_res_mat[,p])
+colnames(aou_test_res_mat_large) = col_names
+#rownames(aou_test_res_mat_large) = col_names
+
+fwrite(aou_test_res_mat, outfile,quote=F,sep="\t",col.names=TRUE, row.names=TRUE)
+print("Regular Matrix")
+aou_test_res_mat
+aou_test_res_mat_large/aou_test_res_mat_large[,1]
+
+print(aou_test_res_mat_large/aou_test_res_mat_large[,1])
+
+#cp to bucket
+# Get the bucket name
+my_bucket <- Sys.getenv('WORKSPACE_BUCKET')
+# Copy the file from current workspace to the bucket
+system(paste0("gsutil cp ./", outfile, " ", my_bucket, "/data/"), intern=T)
+# Check if file is in the bucket
+system(paste0("gsutil ls ", my_bucket, "/data/*.txt"), intern=T)
+
+system(paste0("gsutil cp ./07_Testing.txt ", my_bucket, "/data/"), intern=T)
+
