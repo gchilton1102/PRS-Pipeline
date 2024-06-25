@@ -105,7 +105,9 @@ seed= 60556 # seed value
 
 	* Follow the steps, copy the url and then paste the verification code
 
-	* Then run this command with the prefix of your PRS-CSx files in place of `Standing` and the file path that you want to use in your Google Bucket: `gsutil cp Standing* fc-secure-0b5d7336-c242-426a-8854-548d4ed254d8/data/PRScsx_Standing_Height_output`
+	* Then run this command with the prefix of your PRS-CSx files in place of `Standing` and the file path that you want to use in your Google Bucket: 
+
+	`gsutil cp Standing* fc-secure-0b5d7336-c242-426a-8854-548d4ed254d8/data/PRScsx_Standing_Height_output`
 
 * This section of the pipeline is designed to be run on the All of Us Research Program server
 
